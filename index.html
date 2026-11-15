@@ -1605,7 +1605,7 @@ const D = {
     c.scrollTop = 0;
     if (isPhone()) { w.style.width = w.style.height = ""; dev.style.transform = "none"; c.style.paddingTop = ""; return; }
     const narrow = window.innerWidth <= 820, top = T.on ? (narrow ? 112 : 72) : (narrow ? 60 : 16);
-    const h = c.clientHeight - top - 30, ww = c.clientWidth - 32;
+    const h = (narrow ? window.innerHeight : c.clientHeight) - top - 30, ww = c.clientWidth - 32;
     const s = Math.max(0.45, Math.min(1, h / 868, ww / 414));
     w.style.width = 414 * s + "px"; w.style.height = 868 * s + "px";
     dev.style.transformOrigin = "top left"; dev.style.transform = `scale(${s.toFixed(3)})`;

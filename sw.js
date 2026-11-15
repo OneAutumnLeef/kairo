@@ -1,7 +1,7 @@
 /* Kairo prototype service worker: works offline after the first visit.
    The page is fetched network-first so a new deploy shows up on the next open;
    everything else (icons, fonts) is served from cache and refreshed in the background. */
-const CACHE = "kairo-315e01db6e";
+const CACHE = "kairo-54e6562825";
 const CORE = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png", "icons/favicon-64.png"];
 
 self.addEventListener("install", (e) => {
