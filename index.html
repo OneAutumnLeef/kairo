@@ -758,6 +758,29 @@ body.capture .mobile-only, body.capture .notes-btn { display: none !important; }
   body:not(.capture) .rail .rail-close { display: grid; position: sticky; top: 0; z-index: 2; background: var(--stage-2); }
 }
 
+
+/* ---------- Round 2: guess cards ---------- */
+.gcard { display: grid; grid-template-columns: 74px 1fr; gap: 12px; padding: 12px; align-items: start; animation: gIn .22s cubic-bezier(.2,.8,.2,1); }
+.gcard .lc-thumb { width: 74px; height: 100px; border-radius: 10px; overflow: hidden; }
+.gc-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.gc-pill { cursor: pointer; height: 30px; padding: 0 10px; font-size: 12.5px; }
+.gc-pill:hover { filter: brightness(.97); }
+.gc-chev { display: inline-flex; transform: rotate(90deg); transition: transform .18s; }
+.gc-chev.up { transform: rotate(-90deg); }
+.gc-why { display: flex; gap: 6px; align-items: flex-start; text-align: left; margin-top: 6px; font-size: 12.5px; line-height: 1.35; color: var(--muted); padding: 2px 0; min-height: 28px; }
+.gc-why span { border-bottom: 1px dotted var(--ai); }
+.gc-why svg { flex: none; margin-top: 2px; color: var(--ai); }
+.gc-alts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); animation: gIn .2s ease-out; }
+.gc-q { width: 100%; font-size: 12px; font-weight: 650; color: var(--ink-2); }
+.gc-you { font-size: 11.5px; color: var(--muted); margin-left: 4px; }
+.gc-learn { display: flex; gap: 6px; align-items: flex-start; margin-top: 6px; font-size: 12.5px; line-height: 1.35; color: var(--ai-ink); background: var(--ai-soft); border-radius: 10px; padding: 7px 9px; }
+.gc-learn svg { flex: none; margin-top: 1px; }
+.gcard.fixed { border-color: color-mix(in oklab, var(--done) 35%, var(--line)); }
+.why-sig { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 14px; line-height: 1.4; }
+.why-sig:last-child { border-bottom: 0; }
+.why-sig svg { flex: none; margin-top: 2px; color: var(--ai); }
+@keyframes gIn { from { opacity: 0; transform: translateY(4px) scale(.99); } to { opacity: 1; transform: none; } }
+
 </style>
 </head>
 <body>
@@ -886,6 +909,23 @@ const Art = (() => {
   }
 
   /* ---------------- POSTERS ---------------- */
+  function recipePoster() {
+    return R(0, 0, 400, 500, "#2A1710") +
+      T(28, 62, "PANEER TIKKA", { f: DISP, s: 40, w: 800, c: "#FFD9A8" }) + T(30, 92, "20 MIN · 6 STEPS · SERVES 2", { s: 13, w: 700, c: "#F2B27A", ls: 2 }) +
+      C(200, 236, 104, "#B8BEC6") + C(200, 236, 94, "#E9E4DA") +
+      [[150, 205], [205, 190], [250, 222], [175, 262], [232, 270], [196, 232]].map(([x, y], i) => R(x - 20, y - 15, 40, 30, i % 2 ? "#E07B39" : "#F1A23A", 7, `transform="rotate(${i * 23} ${x} ${y})"`)).join("") +
+      C(160, 240, 8, "#3BA15A") + C(240, 250, 7, "#3BA15A") + C(210, 205, 6, "#C0392B") +
+      R(24, 362, 352, 118, "#3A2218", 14) +
+      ["1  Whisk curd, chilli and garam masala", "2  Coat the paneer, rest 15 min", "3  Grill till charred at the edges"].map((t, i) => T(40, 392 + i * 30, t, { s: 15, c: "#FBE8D3" })).join("");
+  }
+  function typePoster() {
+    return R(0, 0, 400, 500, "#F1EADF") +
+      T(16, 170, "TYPE", { f: DISP, s: 150, w: 800, c: "#151515", ls: -6 }) +
+      T(24, 300, "TALKS", { f: DISP, s: 118, w: 800, c: "#E8442E", ls: -4 }) +
+      R(24, 330, 352, 3, "#151515") +
+      T(24, 366, "MUMBAI DESIGN WEEK", { s: 18, w: 800, c: "#151515", ls: 3 }) + T(24, 392, "5–7 DEC · NCPA, NARIMAN POINT", { s: 14, w: 600, c: "#151515", ls: 1.5 }) +
+      R(24, 420, 220, 40, "#151515", 20) + T(134, 446, "REGISTER BY 30 NOV", { s: 13, w: 800, c: "#F1EADF", a: "middle", ls: 1 });
+  }
   function hackPoster() {
     const g = uid("hg");
     return `<defs><linearGradient id="${g}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1b1145"/><stop offset=".55" stop-color="#341266"/><stop offset="1" stop-color="#0d2a5c"/></linearGradient></defs>` +
@@ -930,6 +970,15 @@ const Art = (() => {
 
   /* ---------------- SCREENSHOTS (360x740) ---------------- */
   const shots = {
+    recipe: () => feedShot("chef.kavya", recipePoster(), [400, 500], "Make this weekend! Save for later.", "12.4k likes"),
+    typeposter: () => feedShot("typetalks.studio", typePoster(), [400, 500], "Register by 30 Nov. Link in bio.", "3,906 likes", false),
+    bill: () => R(0, 0, 360, 740, "#fff") + sb() + R(0, 40, 360, 260, "#1D4ED8") + C(180, 132, 40, "#fff") +
+      `<path d="M161 132 l13 13 l26 -28" stroke="#1D4ED8" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>` +
+      T(180, 220, "₹1,240", { f: DISP, s: 42, w: 700, c: "#fff", a: "middle" }) + T(180, 252, "Paid to City Power", { s: 15, w: 600, c: "#fff", a: "middle" }) +
+      T(180, 274, "Electricity · Oct–Nov bill", { s: 13, c: "#DBE6FF", a: "middle" }) +
+      T(24, 346, "14 Nov 2026, 9:02 AM", { s: 15, w: 600 }) + T(24, 380, "UPI transaction ID", { s: 12, c: "#777" }) + T(24, 402, "4471 2290 1183", { s: 15, w: 600, f: "IBM Plex Mono, monospace" }) +
+      T(24, 440, "Consumer no.", { s: 12, c: "#777" }) + T(24, 462, "1702 3348 91", { s: 15, w: 600, f: "IBM Plex Mono, monospace" }) +
+      R(24, 500, 312, 48, "#F1F2F4", 24) + T(180, 530, "Share receipt", { s: 14, w: 700, a: "middle" }),
     hack: () => feedShot("codesprint.hq", hackPoster(), [400, 500], "Teams of 2–4. Link in bio!", "2,184 likes"),
     concert: () => feedShot("harbourarena", concertPoster(), [400, 500], "Monsoon's back in December.", "9,412 likes"),
     fest: () => feedShot("spectra.fest", festPoster(), [400, 500], "Early birds win. Passes live!", "1,027 likes"),
@@ -1331,6 +1380,25 @@ const D = {
   },
 
   revival: { found: 46, possible: 9, late: 23, unsure: 14 },
+  /* Round 2: three screenshots saved today that Kairo misread. alts[0] is what "Just keep it" files it as. */
+  guesses: [
+    { id: "recipe", art: "shot:recipe", from: "Instagram · saved today, 11:20 AM", conf: 2, confWord: "Fairly sure",
+      guess: { type: "To-do", title: "Cook paneer tikka this weekend", meta: "Remind you Sat, 10 AM?", primary: "Remind me", done: "Reminder set for Sat, 10 AM",
+        why: "6 numbered steps and “make this weekend”", signals: ["Numbered steps, like a checklist", "“Make this weekend!” in the caption", "Saved on a Friday, like your other weekend plans"] },
+      alts: [{ key: "recipe", label: "Recipe", icon: "heart", title: "Paneer tikka in 20 min", meta: "Kept in Saved info · Recipes. Nothing deleted.", learn: "Recipes like this are for keeping", open: "Open recipe" },
+             { key: "groceries", label: "Groceries to buy", icon: "bag", title: "Buy paneer, capsicum and curd", meta: "Added to To do · Shopping", learn: "Recipes like this become a shopping list", open: "See list" }] },
+    { id: "receipt", art: "shot:bill", from: "Screenshot · today, 9:04 AM", conf: 2, confWord: "Fairly sure",
+      guess: { type: "Event", title: "City Power · 14 Nov, 9:02 AM", meta: "Add to your calendar?", primary: "Add to calendar", done: "Added to calendar · 14 Nov, 9:02 AM",
+        why: "a date and a time near the top", signals: ["A date and a time: 14 Nov, 9:02 AM", "A place-like name: City Power", "Most screenshots with a date and time are events"] },
+      alts: [{ key: "receipt", label: "Receipt", icon: "check", title: "Paid ₹1,240 to City Power", meta: "Kept as proof · Saved info · Receipts", learn: "Payment receipts are proof, not events", open: "View receipt" },
+             { key: "bill", label: "Bill to pay", icon: "rupee", title: "Next City Power bill", meta: "Kairo will remind you when the next bill is due", learn: "City Power screenshots are bills", open: "See in To do" }] },
+    { id: "poster", art: "shot:typeposter", from: "Instagram · saved yesterday", conf: 3, confWord: "Sure",
+      guess: { type: "Register", title: "Register for Type Talks", meta: "Mumbai Design Week · closes 30 Nov", primary: "Register now", done: "Opening the registration page",
+        why: "“Register by 30 Nov” and a link in bio", signals: ["“Register by 30 Nov” on the poster", "“Link in bio” in the caption", "A date and a venue: 5–7 Dec, NCPA"] },
+      alts: [{ key: "inspo", label: "Inspiration", icon: "star", title: "Type Talks poster", meta: "Kept in Saved info · Inspiration", learn: "Design posters you save are inspiration", open: "Open board" },
+             { key: "event", label: "Just the event", icon: "calendar", title: "Mumbai Design Week, 5–7 Dec", meta: "In your calendar, no registration", learn: "Posters like this go to the calendar only", open: "See in calendar" }] },
+  ],
+  gKinds: [["todo", "A to-do", "check"], ["event", "An event", "calendar"], ["pay", "A payment to make", "rupee"], ["proof", "A receipt (proof)", "check"], ["buy", "Something to buy", "bag"], ["inspo", "Inspiration or reference", "star"], ["keep", "Just keep it", "info"], ["none", "Not useful: let it go", "x"]],
   scanRows: [["Events & deadlines", 64], ["Payments", 11], ["Shopping", 58], ["Places", 37], ["Info to keep", 214], ["Forwards & memes", 388], ["One-time stuff", 41], ["Chats & everything else", 327]],
 };
 
@@ -1358,6 +1426,7 @@ const D = {
     else { K().go(route); if (over.overlay) { S.overlay = over.overlay; K().render(); } }
   }
   const resetTrip = () => { const S = st(); S.tripDone = false; S.removed = S.removed.filter((r) => r.undoKey !== "trip"); };
+  const resetG = () => { const S = st(); S.g = {}; S.gctx = null; };
   const resetFam = () => Object.assign(st().fam, { sent: false, done: false, hindi: false, show: false });
   const resetSim = () => { const S = st(); Object.assign(S.sim, { stack: 0, cur: 2, keep: new Set([2]), compare: false, removedN: 0, removedMb: 0, done: false }); S.fwd.done = false; S.removed = []; };
 
@@ -1429,6 +1498,16 @@ const D = {
       { route: "ask", target: "ask-wifi", hint: "Try <b>Wi-Fi password from Goa</b>", m: (S) => S.route === "ask" && !S.ask, set: () => { st().ask = ""; to("ask"); } },
       { route: "ask", target: null, hint: "Answer first, source second. The password stays hidden until you tap Show", m: (S) => S.route === "ask" && !!S.ask, set: () => { st().ask = "Wi-Fi password from Goa"; to("ask"); } },
     ] },
+    { t: "Round 2 · Fix a wrong guess", d: "3 in 10 guesses are wrong. Each one is fixed in one or two taps, right on the card", steps: [
+      { route: "now", target: "g-keep-recipe", hint: "Kairo read this recipe as a to-do. Wrong: you saved it to keep. Tap <b>Just keep it</b>", m: (S) => S.route === "now" && !(S.g.recipe && S.g.recipe.fix), set: () => { resetG(); to("now"); } },
+      { route: "now", target: "g-pill-receipt", hint: "One tap, nothing deleted, and Kairo says what it learned. This receipt was read as an event: tap the <b>Event</b> guess", m: (S) => S.route === "now" && !!(S.g.recipe && S.g.recipe.fix) && !(S.g.receipt && (S.g.receipt.open || S.g.receipt.fix)), set: () => { resetG(); st().g.recipe = { fix: "recipe" }; to("now"); } },
+      { route: "now", target: "g-alt-receipt-receipt", hint: "Kairo’s next guesses are right there. Tap <b>Receipt</b>", m: (S) => S.route === "now" && !!(S.g.receipt && S.g.receipt.open), set: () => { resetG(); Object.assign(st().g, { recipe: { fix: "recipe" }, receipt: { open: true } }); to("now"); } },
+      { route: "now", target: "g-why-poster", hint: "Two taps: now it’s kept as proof. Saved this poster for its design? Tap <b>Why</b> to see what Kairo read", m: (S) => S.route === "now" && !!(S.g.receipt && S.g.receipt.fix) && !S.overlay && !(S.g.poster && (S.g.poster.open || S.g.poster.fix)), set: () => { resetG(); Object.assign(st().g, { recipe: { fix: "recipe" }, receipt: { fix: "receipt" } }); to("now"); } },
+      { route: "now", target: "gwhy-else", hint: "Plain reasons, and what Kairo can’t know. Tap <b>It’s something else</b>", m: (S) => S.overlay === "gwhy", set: () => { resetG(); Object.assign(st(), { gctx: "poster" }); Object.assign(st().g, { recipe: { fix: "recipe" }, receipt: { fix: "receipt" } }); to("now", { overlay: "gwhy" }); } },
+      { route: "now", target: "g-alt-poster-inspo", hint: "Tap <b>Inspiration</b>", m: (S) => S.route === "now" && !!(S.g.poster && S.g.poster.open) && !S.overlay, set: () => { resetG(); Object.assign(st().g, { recipe: { fix: "recipe" }, receipt: { fix: "receipt" }, poster: { open: true } }); to("now"); } },
+      { route: "now", target: "avatar", hint: "Every fix has Undo, on the card and in the toast. Tap the <b>A</b> avatar to see what Kairo learned", m: (S) => S.route === "now" && !!(S.g.poster && S.g.poster.fix), set: () => { resetG(); Object.assign(st().g, { recipe: { fix: "recipe" }, receipt: { fix: "receipt" }, poster: { fix: "inspo" } }); to("now"); } },
+      { route: "trust", target: "g-log", hint: "What Kairo learned, in plain words, each with its own Undo. You have the final say", m: (S) => S.route === "trust", set: () => { resetG(); Object.assign(st().g, { recipe: { fix: "recipe" }, receipt: { fix: "receipt" }, poster: { fix: "inspo" } }); to("trust"); } },
+    ] },
   ];
 
   /* ---------------- design notes ---------------- */
@@ -1458,7 +1537,9 @@ const D = {
     now: ["Sorted by when things matter", "Kairos over chronos. Home is a priority feed; the date grid is one tab away.", [
       ["ux", "The time ring", "Each card shows how much of its window is left, coral under 15%. Amber means something is waiting on you. The label (“2d left”) means colour is never the only cue. <cite>WCAG 1.4.1</cite>"],
       ["ux", "Hierarchy by urgency", "Needs you → Done, with proof → Right here → Is this a to-do? → Coming up → Ready to let go → Relive. One scroll."],
-      ["ai", "Context, not just time", "“400 m from Café Mirchi” uses geofencing: up to 100 per app, minimum radius 100–150 m recommended <cite>(Android docs)</cite>. Location is opt-in."]]],
+      ["ai", "Context, not just time", "“400 m from Café Mirchi” uses geofencing: up to 100 per app, minimum radius 100–150 m recommended <cite>(Android docs)</cite>. Location is opt-in."],
+      ["trust", "Round 2: wrong guesses cost one tap", "Beta data: 3 in 10 guesses are wrong. So every guess card carries its own fix: <b>Just keep it</b> (one tap) for the act-or-keep mix-up, and the guess itself opens Kairo’s next two guesses (two taps). People keep using an imperfect algorithm when they can adjust it, even slightly <cite>(Dietvorst, Simmons &amp; Massey, Management Science, 2018)</cite>."],
+      ["ai", "Show why, on the card", "One line says what Kairo read (“a date and a time”), so a wrong guess makes sense at a glance. Corrections teach Kairo on the phone, and each lesson can be undone in Privacy &amp; control <cite>(Amershi G9, G11, G13, G17)</cite>."]]],
     "item-hack": ["Dotted is Kairo’s guess. Solid is your word.", "One visual rule for transparency, used on every screen.", [
       ["ai", "Show where each value came from", "Highlights on the screenshot mark the deadline, dates and link Kairo read. <cite>Amershi G11 “Make clear why the system did what it did”</cite>"],
       ["trust", "Calibrate, then correct", "Confidence in words and bars (G2). “Looks right” turns dotted to solid. Every field is editable (G9 “Support efficient correction”)."],
@@ -1619,7 +1700,7 @@ const D = {
       if (!$("rail-right")) return;
       if (advance(S)) renderRail();
       renderNotes(S); renderTourbar();
-      requestAnimationFrame(highlight);
+      requestAnimationFrame(highlight); setTimeout(highlight, 80);
     },
     onAction() {},
     syncTheme(dark) { const b = $("tgl-dark"); if (b) b.setAttribute("aria-pressed", dark); },
@@ -1665,7 +1746,7 @@ const D = {
     overlay: null, ctx: null, toast: null, handoff: null,
     seg: "open", filter: "all", lens: "all",
     registered: false, paid: false, captured: false, chip: false, chipWhy: null, calAdded: false,
-    gym: null, notInterested: false, cafeSnoozed: false, fixed: {}, confirmed: {},
+    gym: null, notInterested: false, cafeSnoozed: false, fixed: {}, confirmed: {}, g: {}, gctx: null,
     autonomy: "suggest", triaged: {}, lateLetGo: false, scanDone: false,
     sim: { stack: 0, cur: 2, keep: null, compare: false, removedN: 0, removedMb: 0, done: false },
     fwd: { off: {}, unsel: {}, stopGroup: true, done: false },
@@ -1813,6 +1894,48 @@ const D = {
       <div class="lc-ring">${signal(l)}</div></div>`;
   }
 
+  /* ---------------- Round 2: guess cards that are cheap to correct ---------------- */
+  const G = (id) => D.guesses.find((g) => g.id === id);
+  const gAlt = (g, key) => g.alts.find((a) => a.key === key) || { key, label: (D.gKinds.find((k) => k[0] === key) || [0, "Kept"])[1], icon: "info", title: g.guess.title, meta: key === "none" ? "Moved to Tidy · One-time stuff. Restorable for 30 days" : "Filed as you said. Nothing deleted", learn: `Screenshots like this: ${(D.gKinds.find((k) => k[0] === key) || [0, "kept"])[1].toLowerCase()}`, open: "Open" };
+  function guessCard(g) {
+    const st = S.g[g.id] || {};
+    const thumb = `<button class="lc-thumb" data-act="toast:Opening the screenshot" aria-label="Open the screenshot">${art(g.art, "top")}</button>`;
+    if (st.fix) {
+      const a = gAlt(g, st.fix);
+      return `<div class="card gcard fixed" data-tour="g-${g.id}">${thumb}<div class="lc-body" style="padding-right:0">
+        <div><span class="pill confirmed">${I("check", 12, 2.6)} ${a.label}</span> <span class="gc-you">You decided</span></div>
+        <div class="lc-title">${a.title}</div><div class="lc-meta">${a.meta}</div>
+        <div class="gc-learn">${I("sparkle", 13)}<span>Kairo learned: ${a.learn}.</span></div>
+        <div class="lc-actions"><button class="btn secondary sm" data-act="toast:${a.open === "Open" ? "Opening it" : a.open + " · opening"}">${a.open}</button><button class="btn ghost sm" data-act="g-undo:${g.id}" data-tour="g-undo-${g.id}">${I("undo", 14)} Undo</button></div></div></div>`;
+    }
+    if (st.done) {
+      return `<div class="card gcard fixed" data-tour="g-${g.id}">${thumb}<div class="lc-body" style="padding-right:0">
+        <div><span class="pill confirmed">${I("check", 12, 2.6)} ${g.guess.type}</span> <span class="gc-you">You confirmed</span></div>
+        <div class="lc-title">${g.guess.title}</div><div class="lc-meta">${g.guess.done}</div>
+        <div class="lc-actions"><button class="btn ghost sm" data-act="g-undo:${g.id}">${I("undo", 14)} Undo</button></div></div></div>`;
+    }
+    const open = !!st.open;
+    return `<div class="card gcard" data-tour="g-${g.id}">${thumb}<div class="lc-body" style="padding-right:0">
+      <div class="gc-top"><button class="pill ai gc-pill" data-act="g-open:${g.id}" aria-expanded="${open}" aria-label="Kairo guessed ${g.guess.type}. Change" data-tour="g-pill-${g.id}">${I("sparkle", 12)} ${g.guess.type} <span class="gc-chev ${open ? "up" : ""}">${I("chev", 12)}</span></button>${confM(g.conf, g.confWord)}</div>
+      <div class="lc-title">${g.guess.title}</div><div class="lc-meta">${g.guess.meta}</div>
+      <button class="gc-why" data-act="g-why:${g.id}" data-tour="g-why-${g.id}">${I("eye", 13)}<span>Why: ${g.guess.why}</span></button>
+      <div class="lc-actions"><button class="btn primary sm" data-act="g-acc:${g.id}">${g.guess.primary}</button><button class="btn secondary sm" data-act="g-keep:${g.id}" data-tour="g-keep-${g.id}">Just keep it</button></div>
+      ${open ? `<div class="gc-alts" role="group" aria-label="What is it, really?"><span class="gc-q">What is it, really?</span>
+        ${g.alts.map((a) => `<button class="chip-f" data-act="g-alt:${g.id}:${a.key}" data-tour="g-alt-${g.id}-${a.key}">${I(a.icon, 14)} ${a.label}</button>`).join("")}
+        <button class="chip-f" data-act="g-else:${g.id}">Something else…</button></div>` : ""}
+      </div></div>`;
+  }
+  function guessSection() {
+    return `<div class="sec-head"><h2 class="h-sec">Just saved</h2><span class="count">Kairo’s guesses</span></div>
+      <div class="stack">${D.guesses.map(guessCard).join("")}</div>`;
+  }
+  function gFix(id, key) {
+    const g = G(id); if (!g) return;
+    const a = gAlt(g, key);
+    S.g[id] = { fix: key }; S.overlay = null;
+    toast(`${a.label}. Nothing deleted, and Kairo will remember`, () => { delete S.g[id]; });
+  }
+
   /* ---------------- screens ---------------- */
   const Scr = {};
 
@@ -1923,6 +2046,7 @@ const D = {
       ${gym ? `<div class="sec-head"><h2 class="h-sec">Is this a to-do?</h2><span class="count">Kairo isn’t sure</span></div>
         <div class="card loop-card unsure-card" data-tour="card-gym"><button class="lc-thumb" data-act="go:item-gym">${art(gym.art, "top")}</button><div class="lc-body" style="padding-right:0"><div>${confM(1, "Not sure")}</div><div class="lc-title">${gym.title}</div><div class="lc-meta">Prices and a QR code. A payment, or just comparing?</div>
         <div class="lc-actions"><button class="btn secondary sm" data-act="gym:pay">A payment</button><button class="btn secondary sm" data-act="gym:info" data-tour="gym-info">Just info</button><button class="btn ghost sm" data-act="go:item-gym">More</button></div></div></div>` : ""}
+      ${guessSection()}
       ${coming.length ? `<div class="sec-head"><h2 class="h-sec">Coming up</h2><button class="link" data-act="tab:todo">See all</button></div>
         <div class="card" style="padding:2px 0">${coming.map((l) => `<button class="row-loop" data-act="go:item-${l.id}"><span class="rthumb">${art(l.art, "top")}</span><span style="min-width:0"><span class="rt">${l.title}</span><span class="rm">${l.meta}</span></span>${signal(l)}</button>`).join("")}</div>` : ""}
       <div class="sec-head"><h2 class="h-sec">Ready to let go</h2></div>
@@ -2166,6 +2290,7 @@ const D = {
     if (S.tripDone) log.push(["check", "Closed “Train to Madgaon”: 212 Goa photos were the proof", "Undo"]);
     if (S.fam.done) log.push(["heart", `Helped ${D.family.parent} free ${D.family.gb} GB, with ${D.family.parent}’s OK`, "See"]);
     if (S.gym) log.push(["edit", "You corrected 1 guess: gym prices are info", "Undo"]);
+    D.guesses.forEach((g) => { const st = S.g[g.id]; if (st && st.fix) log.unshift(["sparkle", `You taught Kairo: ${gAlt(g, st.fix).learn.charAt(0).toLowerCase() + gAlt(g, st.fix).learn.slice(1)}`, "Undo", `g-undo:${g.id}`]); });
     if (S.removed.length) log.push(["trash", `You removed ${removedCount()} items · all restorable`, "Restore"]);
     return { html: `<div class="appbar"><button class="icon-btn" data-act="back" aria-label="Back">${I("back")}</button><div class="title">Privacy & control</div><span style="width:44px"></span></div>
       <div class="pad">
@@ -2188,7 +2313,7 @@ const D = {
       <div class="sec-head"><h2 class="h-sec" style="font-size:16px">Off-limits</h2></div>
       <div class="card">${[["Private vault", "IDs, cards and bank details. Never resurfaced or suggested.", true], ["Hidden album", "Kairo doesn’t read it at all.", true], ["Screenshots of banking apps", "Detected and skipped.", true]].map((r, i) => `<div class="set-row"><div><div class="st">${r[0]}</div><div class="sd">${r[1]}</div></div><button class="switch" role="switch" aria-checked="${S["off" + i] === undefined ? r[2] : S["off" + i]}" data-act="offlim:${i}" aria-label="${r[0]}"></button></div>`).join("")}</div>
       <div class="sec-head"><h2 class="h-sec" style="font-size:16px">This week</h2><span class="count">undo anything for 30 days</span></div>
-      <div class="card">${log.map((r) => `<div class="log-row"><span class="li">${I(r[0], 16)}</span><span>${r[1]}</span><button class="link" data-act="toast:${r[2] === "Undo" ? "Undone" : r[2] === "Restore" ? "Open Recently removed to restore" : "Showing details"}">${r[2]}</button></div>`).join("")}</div>
+      <div class="card" data-tour="g-log">${log.map((r) => `<div class="log-row"><span class="li">${I(r[0], 16)}</span><span>${r[1]}</span><button class="link" data-act="${r[3] || `toast:${r[2] === "Undo" ? "Undone" : r[2] === "Restore" ? "Open Recently removed to restore" : "Showing details"}`}">${r[2]}</button></div>`).join("")}</div>
       <button class="card shield-card" style="margin-top:12px" data-act="sheet:protect"><span class="shield-ic">${I("shield", 22)}</span><span style="flex:1"><div class="cat-t">Protected memories</div><div class="cat-d">${D.library.protected.toLocaleString("en-IN")} photos · starred people, milestones, favourites</div></span>${I("chev", 18)}</button>
       <div class="theme-row"><span class="small muted">Appearance</span><div class="seg" style="width:170px"><button aria-pressed="${!S.dark}" data-act="theme:light">Light</button><button aria-pressed="${S.dark}" data-act="theme:dark">Dark</button></div></div>
       <div style="height:24px"></div></div>` };
@@ -2265,6 +2390,19 @@ const D = {
   function overlayHTML() {
     const o = S.overlay; if (!o) return "";
     const l = S.ctx ? L(S.ctx) : null;
+    if (o === "gwhy" && G(S.gctx)) {
+      const g = G(S.gctx);
+      return sheet(`<h3>Why Kairo guessed “${g.guess.type}”</h3><p class="lede">Read on this phone from the screenshot. ${confM(g.conf, g.confWord)}</p>
+        <div class="card" style="padding:4px 14px;margin-top:12px">${g.guess.signals.map((s) => `<div class="why-sig">${I("eye", 15)}<span>${s}</span></div>`).join("")}</div>
+        <p class="small muted" style="margin:12px 2px 0">What Kairo can’t see is <b>why you</b> saved it. If this is wrong, one tap fixes it and Kairo learns.</p>
+        <div class="btn-row" style="margin-top:14px"><button class="btn secondary" data-act="g-open:${g.id}" data-tour="gwhy-else">It’s something else</button><button class="btn primary" data-act="g-acc:${g.id}">That’s right</button></div>`, "Why Kairo guessed this");
+    }
+    if (o === "gfix" && G(S.gctx)) {
+      const g = G(S.gctx);
+      return sheet(`<h3>What is this, really?</h3><p class="lede">Kairo guessed <b>${g.guess.type}</b>. Your answer fixes this one and teaches Kairo for next time. Nothing is deleted.</p>
+        ${D.gKinds.map((k) => `<button class="opt" data-act="g-set:${k[0]}"><span class="oi">${I(k[2], 18)}</span><span class="ot">${k[1]}</span>${I("chev", 16)}</button>`).join("")}
+        <button class="btn ghost block" style="margin-top:6px" data-act="close">Cancel, keep Kairo’s guess</button>`, "Change Kairo’s guess");
+    }
     if (o === "why") {
       const list = l ? l.why : WHY_TIDY[S.ctx] || [];
       const confW = l ? l.confWord : "Sure";
@@ -2395,6 +2533,14 @@ const D = {
     const [cmd, ...rest] = a.split(":"); const arg = rest.join(":");
     const ctx = el && el.dataset.ctx;
     switch (cmd) {
+      case "g-acc": S.g[arg] = { done: true }; S.overlay = null; toast((G(arg) || { guess: { done: "Done" } }).guess.done, () => { delete S.g[arg]; }); break;
+      case "g-keep": gFix(arg, G(arg).alts[0].key); break;
+      case "g-open": { const was = !!(S.g[arg] && S.g[arg].open); S.g[arg] = { open: S.overlay === "gwhy" ? true : !was }; S.overlay = null; render(); break; }
+      case "g-alt": { const [id, key] = arg.split(":"); gFix(id, key); break; }
+      case "g-why": S.gctx = arg; S.overlay = "gwhy"; render(); break;
+      case "g-else": S.gctx = arg; S.overlay = "gfix"; render(); break;
+      case "g-set": gFix(S.gctx, arg); break;
+      case "g-undo": delete S.g[arg]; toast("Back to Kairo’s guess. Nothing changed"); break;
       case "go": go(arg); break;
       case "back": back(); break;
       case "tab": S.hist = []; go(arg); break;
@@ -2512,6 +2658,10 @@ const D = {
   S.route = h && valid(h) ? h : "onboard";
   if (Q.get("state")) Q.get("state").split(",").forEach((k) => { const [a, b] = k.split("="); if (a === "dark") S.dark = true; else if (a === "sheet") S.overlay = b; else if (a === "ctx") S.ctx = b; else if (a === "seg") S.seg = b; else if (a === "lens") S.lens = b; else if (a === "ask") S.ask = decodeURIComponent(b); else if (a === "scan") S.scanDone = true; else if (a === "fam") S.fam[b] = true; else if (a === "swap") S.swap[b] = true; else if (a === "notif") S.ev.notif = true; else if (a in S) S[a] = b === "1" ? true : b; });
   if (Q.get("chip")) { S.captured = true; S.chip = true; }
+  if (Q.get("g")) Q.get("g").split(",").forEach((k) => { const [id, st, key] = k.split("."); S.g[id] = st === "fix" ? { fix: key } : st === "done" ? { done: true } : { open: true }; });
+  if (Q.get("gwhy")) { S.gctx = Q.get("gwhy"); S.overlay = "gwhy"; }
+  if (Q.get("gfix")) { S.gctx = Q.get("gfix"); S.overlay = "gfix"; }
+  if (Q.get("scrollto")) setTimeout(() => { const el = document.querySelector(`#app [data-tour="${Q.get("scrollto")}"]`), sc = document.getElementById("scr"); if (el && sc) sc.scrollTop += el.getBoundingClientRect().top - sc.getBoundingClientRect().top - 58; }, 400);
   if (Q.get("sim")) { S.sim.cur = +Q.get("sim"); }
   if (Q.get("compare")) { S.sim.compare = true; }
   if (Q.get("demo") === "tidied") {
